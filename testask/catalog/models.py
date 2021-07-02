@@ -39,8 +39,13 @@ class Product(models.Model):
     description = models.TextField(
         verbose_name='описание',
     )
+    is_published = models.BooleanField(
+        verbose_name='опубликовано',
+        default=True
+    )
     is_deleted = models.BooleanField(
         verbose_name='удалено',
+        default=False
     )
     created = models.DateTimeField(
         verbose_name='дата создания',
