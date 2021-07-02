@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Catalog(models.Model):
+class Category(models.Model):
     name = models.CharField(
         verbose_name='наименование',
         max_length=64,
@@ -17,7 +17,8 @@ class Catalog(models.Model):
         verbose_name_plural = 'категории'
 
 
-class Item(models.Model):
+class Product(models.Model):
+    category = models.ManyToManyField(Category)
     name = models.CharField(
         verbose_name='наименование',
         max_length=80,
@@ -32,6 +33,12 @@ class Item(models.Model):
         blank=False,
         null=False,
         default=0
+    )
+    quantity = models.IntegerField(
+        verbose_name='количество',
+        default=1,
+        blank=False,
+        null=False,
     )
     description = models.TextField(
         verbose_name='описание',
