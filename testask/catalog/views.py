@@ -53,10 +53,42 @@ class ProductsListView(generics.ListAPIView):
     serializer_class = ProductSerializer
 
 
-class ProductsDeleteListView(generics.ListAPIView):
-    ''' Вернуть список удаленных товаров '''
-    queryset = Product.objects.filter(is_deleted=True)
+class ProductNameQueryView(generics.ListAPIView):
+    ''' Возвращает запись по имени '''
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.filter(name=self.request.query_params.get('name', None))
+        if queryset is not None:
+            return queryset
+
+
+class ProductPriceListView(generics.ListAPIView):
+    ''' Вывод товара в ценовом диапазоне '''
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        min_price = self.request.query_params.get('min', None)
+        max_price = self.request.query_params.get('max', None)
+        if min_price is not None and max_price is not None:
+            queryset = queryset.filter(price__gte=min_price, price__lte=max_price)
+        return queryset
+
+
+class ProductPublishedListView(generics.ListAPIView):
+    ''' Вывод товаров по параметру публикации '''
+    serializer_class = ProductSerializer
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        pub = self.request.query_params.get('status', None)
+        if pub is not None and pub == 'true':
+            queryset = queryset.filter(is_published=True)
+        elif pub is not None and pub == 'false':
+            queryset = queryset.filter(is_published=False)
+        return queryset
 
 
 class ProductDetailView(generics.RetrieveAPIView):
@@ -71,6 +103,7 @@ class ProductCreateView(generics.CreateAPIView):
 
 
 class ProductEditView(generics.RetrieveUpdateAPIView):
+    ''' Изменение товара '''
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -88,6 +121,10 @@ class ProductDeleteView(generics.UpdateAPIView):
 
 
 class ProductCategoriesListView(generics.ListAPIView):
+    '''
+    Возврат товаров по название или id категории
+    Формат запроса: ?category=< id / наименование >
+    '''
     serializer_class = ProductSerializer
     '''
     categories/all?category=<id>
