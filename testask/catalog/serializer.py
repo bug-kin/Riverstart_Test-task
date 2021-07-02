@@ -3,8 +3,10 @@ from .models import Product, Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    model = Category
-    fields = '__all__'
+
+    class Meta:
+        model = Category
+        fields = '__all__'
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
@@ -25,4 +27,4 @@ class ProductDeleteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['name', 'is_deleted']
+        fields = ['is_deleted']

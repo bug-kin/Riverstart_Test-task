@@ -30,15 +30,11 @@ class Product(models.Model):
         verbose_name='цена',
         max_digits=8,
         decimal_places=2,
-        blank=False,
-        null=False,
         default=0
     )
     quantity = models.IntegerField(
         verbose_name='количество',
         default=1,
-        blank=False,
-        null=False,
     )
     description = models.TextField(
         verbose_name='описание',
